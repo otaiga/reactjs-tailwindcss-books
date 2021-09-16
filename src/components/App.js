@@ -1,25 +1,49 @@
+import { useEffect, useState } from "react";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import Book from "./Book";
-import books from "../lib/books";
 
 const Home = () => {
+  const [books, setBooks] = useState([]);
+
+  const getBooks = async () => {
+    try {
+      const response = await fetch(new URL("books", "http://localhost:8000"));
+      if (response.ok) {
+        const books = await response.json();
+        setBooks(books);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    getBooks();
+  }, []);
+
   return (
     <section className="p-8">
-      <h1 className="font-bold ">List of books</h1>
-      <ul>
-        {Object.keys(books).map((bookId) => {
-          return (
-            <li key={bookId}>
-              <Link
-                className="no-underline hover:underline"
-                to={`/book/${bookId}`}
-              >
-                {books[bookId].title}
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
+      {books.length > 0 ? (
+        <>
+          <h1 className="font-bold ">List of books</h1>
+          <ul>
+            {books.map((book) => {
+              return (
+                <li key={book.sub}>
+                  <Link
+                    className="no-underline hover:underline"
+                    to={`/book/${book.sub}`}
+                  >
+                    {book.title}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </>
+      ) : (
+        <p>Loading...</p>
+      )}
     </section>
   );
 };

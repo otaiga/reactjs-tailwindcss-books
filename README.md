@@ -6,4 +6,4 @@ No backend DB/API, using a simple JSON file to obtain data for testing
 
 - Developed with Node_v14
 - `npm i`
-- `npm start`
+- `./start.sh`
